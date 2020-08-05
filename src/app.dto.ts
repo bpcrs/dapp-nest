@@ -7,6 +7,7 @@ export class RegisterRequest {
     username: string;
 }
 export class SubmitContractRequest {
+    public bookingId: number;
     public carId: number;
     public renterId: number;
     public ownerId: number;
@@ -17,6 +18,13 @@ export class SubmitContractRequest {
     public location: string;
     public destination: string;
     public criteria: Criteria[];
+}
+
+export class QueryContractRequest {
+    public bookingId: number;
+    public carId: number;
+    public renterId: number;
+    public ownerId: number;
 }
 export class Criteria {
     public name: string;

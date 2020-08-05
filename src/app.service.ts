@@ -3,7 +3,9 @@ import path = require('path');
 import fs = require('fs');
 import { Gateway, Wallets } from 'fabric-network';
 import FabricCAServices = require('fabric-ca-client');
-import { SubmitContractRequest, ResponseBody } from './app.dto';
+import { SubmitContractRequest, ResponseBody, QueryContractRequest } from './app.dto';
+import CryptoJS = require('crypto-js');
+
 @Injectable()
 export class AppService {
   CCP_PATH = path.resolve(
@@ -15,6 +17,12 @@ export class AppService {
   );
   CONTRACT_ID = 'agreements';
   CHANNEL_ID = 'mychannel';
+
+  FUNCTION_NAME = {
+    SUBMIT_CONTRACT: 'submitContract',
+    QUERY_CONTRACT: 'queryContract',
+  };
+
   getHello(): string {
     return 'Hello World!';
   }
@@ -91,11 +99,57 @@ export class AppService {
     return false;
   }
 
-  async submitContract(contract: SubmitContractRequest) {}
+  async submitContract(contract: SubmitContractRequest): Promise<ResponseBody> {
+    const {
+      carId,
+      ownerId,
+      renterId,
+      bookingId,
+      fromDate,
+      toDate,
+      totalPrice,
+      carPrice,
+      criteria,
+      location,
+      destination,
+    } = contract;
+    const keyContract = CryptoJS.MD5(
+      `${bookingId}_${carId}_${ownerId}_${renterId}`,
+    );
+    console.log(contract);
+    const criteriaJSON = JSON.stringify(criteria);
+    return this.invoke(
+      this.FUNCTION_NAME.SUBMIT_CONTRACT,
+      keyContract.toString(),
+      carId.toString(),
+      renterId.toString(),
+      ownerId.toString(),
+      fromDate.toString(),
+      toDate.toString(),
+      location,
+      destination,
+      carPrice.toString(),
+      totalPrice.toString(),
+      criteriaJSON,
+    );
+  }
 
-  async invoke(fnName: string, args: string[]): Promise<ResponseBody> {
+  async queryContract(contract: QueryContractRequest): Promise<ResponseBody> {
+    const {
+      carId,
+      ownerId,
+      renterId,
+      bookingId,
+    } = contract;
+    const keyContract = CryptoJS.MD5(
+      `${bookingId}_${carId}_${ownerId}_${renterId}`,
+    );
+    return this.query(this.FUNCTION_NAME.QUERY_CONTRACT, keyContract.toString());
+  }
+  async query(fnName: string, ...args: string[]): Promise<ResponseBody> {
     const response: ResponseBody = {
       success: false,
+      data: '',
     };
     try {
       // Create a new gateway for connecting to our peer node.
@@ -125,7 +179,7 @@ export class AppService {
         `Transaction has been evaluated, result is: ${result.toString()}`,
       );
       response.success = true;
-      response.data = result;
+      response.data = JSON.parse(result.toString());
       return response;
     } catch (error) {
       console.error(`Failed to evaluate transaction: ${error}`);
@@ -133,9 +187,11 @@ export class AppService {
     return response;
   }
 
-  async query(fnName: string, args: string[]): Promise<ResponseBody> {
+  async invoke(fnName: string, ...args: string[]): Promise<ResponseBody> {
+    console.log(args)
     const response: ResponseBody = {
       success: false,
+      data: '',
     };
     try {
       // Create a new gateway for connecting to our peer node.
