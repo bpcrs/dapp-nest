@@ -9,4 +9,4 @@ COPY package*.json ./
 COPY . .
 RUN npm install
 EXPOSE 6000
-CMD ["node", "dist/main"]
+CMD ["node", "main"]
