@@ -188,7 +188,7 @@ export class AppService {
   }
 
   async invoke(fnName: string, ...args: string[]): Promise<ResponseBody> {
-    console.log(args)
+    console.log(args);
     const response: ResponseBody = {
       success: false,
       data: '',
