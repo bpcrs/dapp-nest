@@ -1,4 +1,5 @@
-FROM node:10.16.0-alpine as builder
+FROM node:10.16.0 as builder
+
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
@@ -6,11 +7,13 @@ ENV NODE_ENV=${NODE_ENV}
 WORKDIR /app
 
 COPY package*.json ./
-
+RUN npm i -g @nestjs/cli
 RUN npm install
-RUN npm run build
 
 COPY . .
+
+RUN npm run build
+
 
 FROM  node:10.16.0-alpine
 
