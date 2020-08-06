@@ -1,0 +1,28 @@
+name: NestJS build Docker and push to registry
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker Package Registry
+      uses: craftech-io/package-action@v3.1.0
+      with:
+        access_token: ${{ secrets.GITHUB_TOKEN }}
+        username: ${{ github.actor }}
+        image_name: dapp-nest
+        tags: latest
+  
+    - name: Remote SSH Commands
+      uses: garygrossgarten/github-action-ssh@v0.5.0
+      with:
+        command: sh deploy-dapp.sh
+        host: 34.87.125.208
+        username: jeremy
+        privateKey: ${{ secrets.SSH_KEY }}
