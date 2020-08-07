@@ -1,0 +1,8 @@
+version: "3"
+services:
+  dapp-nest:
+    image: docker.pkg.github.com/bpcrs/dapp-nest/dapp-nest:latest
+    volumes:
+    - ./bpcrs-network/crypto-config:/app/crypto-config
+    - ./wallet:/app/wallet
+    network_mode: host
