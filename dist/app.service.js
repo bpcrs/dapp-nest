@@ -114,14 +114,8 @@ let AppService = class AppService {
                 renter,
                 copyType: isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER,
             });
-            console.log('==================================');
-            console.log(Object.values(agreement.data).join('_'));
-            console.log(data);
-            console.log(this.computeMD5Data(Object.values(agreement.data).join('_')));
-            console.log(this.computeMD5Data(data));
-            this.computeMD5Data(data);
             if (this.computeMD5Data(Object.values(agreement.data).join('_')) !== this.computeMD5Data(data)) {
-                response.data = 'Data did match on blockchain';
+                response.data = 'Data not match on blockchain';
                 return response;
             }
             const walletContents = await wallet.get(isOwner ? owner : renter);
@@ -132,7 +126,7 @@ let AppService = class AppService {
             const sigValueHex = sig.sign();
             const sigValueBase64 = new Buffer(sigValueHex, 'hex').toString('base64');
             console.log('Signature: ' + sigValueBase64);
-            const afterSign = await this.invoke(this.FUNCTION_NAME.SIGN_CONTRACT, keyContract, sigValueBase64, isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER);
+            const afterSign = await this.invoke(this.FUNCTION_NAME.SIGN_CONTRACT, keyContract.toString(), isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER, sigValueBase64);
             console.log(afterSign);
             return response;
         }
@@ -169,7 +163,7 @@ let AppService = class AppService {
             const network = await gateway.getNetwork(this.CHANNEL_ID);
             const contract = network.getContract(this.CONTRACT_ID);
             const result = await contract.evaluateTransaction(fnName, ...args);
-            console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
+            console.log(`Transaction has been evaluated`);
             response.success = true;
             response.data = JSON.parse(result.toString());
             await gateway.disconnect();

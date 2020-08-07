@@ -180,14 +180,8 @@ export class AppService {
         renter,
         copyType: isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER,
       });
-      console.log('==================================');
-      console.log(Object.values(agreement.data).join('_'))
-      console.log(data)
-      console.log(this.computeMD5Data(Object.values(agreement.data).join('_')))
-      console.log(this.computeMD5Data(data))
-      this.computeMD5Data(data);
       if (this.computeMD5Data(Object.values(agreement.data).join('_')) !== this.computeMD5Data(data)) {
-        response.data = 'Data did match on blockchain';
+        response.data = 'Data not match on blockchain';
         return response;
       }
       // extract certificate info from wallet
@@ -201,9 +195,9 @@ export class AppService {
       console.log('Signature: ' + sigValueBase64);
 
       const afterSign = await this.invoke(
-        this.FUNCTION_NAME.SIGN_CONTRACT, keyContract,
-        sigValueBase64,
+        this.FUNCTION_NAME.SIGN_CONTRACT, keyContract.toString(),
         isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER,
+        sigValueBase64,
       );
 
       console.log(afterSign);
@@ -261,7 +255,7 @@ export class AppService {
       // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
       const result = await contract.evaluateTransaction(fnName, ...args);
       console.log(
-        `Transaction has been evaluated, result is: ${result.toString()}`,
+        `Transaction has been evaluated`,
       );
       response.success = true;
       response.data = JSON.parse(result.toString());

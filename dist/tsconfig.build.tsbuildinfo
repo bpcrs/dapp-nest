@@ -1582,7 +1582,7 @@
         "affectsGlobalScope": false
       },
       "../src/app.service.ts": {
-        "version": "a93ce1cd6fda2b23d46da3f4995a1989a280a42f5e5af7626cf1efff32ec7a61",
+        "version": "c17a49e1fb3f8c460b05050ade55274e77d501e05db31be96742391a5353a56b",
         "signature": "99cc50d0c9cfbaaa627126cd0ff80ff8ecae975b74f3a1aab8682aca74124bc1",
         "affectsGlobalScope": false
       },
