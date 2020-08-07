@@ -13,6 +13,7 @@ const fs = require("fs");
 const fabric_network_1 = require("fabric-network");
 const FabricCAServices = require("fabric-ca-client");
 const CryptoJS = require("crypto-js");
+const { KJUR, KEYUTIL } = require('jsrsasign');
 let AppService = class AppService {
     constructor() {
         this.CCP_PATH = path.resolve('.', 'crypto-config', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
@@ -21,6 +22,11 @@ let AppService = class AppService {
         this.FUNCTION_NAME = {
             SUBMIT_CONTRACT: 'submitContract',
             QUERY_CONTRACT: 'queryContract',
+            SIGN_CONTRACT: 'singingContract',
+        };
+        this.COPY_TYPE = {
+            OWNER: 'OWNER',
+            RENTER: 'RENTER',
         };
     }
     getHello() {
@@ -78,16 +84,72 @@ let AppService = class AppService {
         return false;
     }
     async submitContract(contract) {
-        const { carId, ownerId, renterId, bookingId, fromDate, toDate, totalPrice, carPrice, criteria, location, destination, } = contract;
-        const keyContract = CryptoJS.MD5(`${bookingId}_${carId}_${ownerId}_${renterId}`);
+        const { carId, owner, renter, bookingId, fromDate, toDate, totalPrice, carPrice, criteria, location, destination, } = contract;
+        const keyContract = CryptoJS.MD5(`${bookingId}_${carId}_${owner}_${renter}`);
         console.log(contract);
         const criteriaJSON = JSON.stringify(criteria);
-        return this.invoke(this.FUNCTION_NAME.SUBMIT_CONTRACT, keyContract.toString(), carId.toString(), renterId.toString(), ownerId.toString(), fromDate.toString(), toDate.toString(), location, destination, carPrice.toString(), totalPrice.toString(), criteriaJSON);
+        return this.invoke(this.FUNCTION_NAME.SUBMIT_CONTRACT, keyContract.toString(), carId.toString(), renter, owner, fromDate.toString(), toDate.toString(), location, destination, carPrice.toString(), totalPrice.toString(), criteriaJSON);
+    }
+    async signingContract(request) {
+        const response = {
+            success: false,
+            data: '',
+        };
+        const { carId, owner, renter, bookingId, isOwner, data } = request;
+        try {
+            const keyContract = CryptoJS.MD5(`${bookingId}_${carId}_${owner}_${renter}`);
+            const walletPath = path.join(process.cwd(), 'wallet');
+            const wallet = await fabric_network_1.Wallets.newFileSystemWallet(walletPath);
+            const userIdentity = await wallet.get(isOwner ? owner : renter);
+            if (!userIdentity) {
+                console.log('An identity for the user ' + isOwner
+                    ? owner
+                    : renter + ' does not exist in the wallet');
+                return;
+            }
+            const agreement = await this.queryContract({
+                bookingId,
+                carId,
+                owner,
+                renter,
+                copyType: isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER,
+            });
+            console.log('==================================');
+            console.log(Object.values(agreement.data).join('_'));
+            console.log(data);
+            console.log(this.computeMD5Data(Object.values(agreement.data).join('_')));
+            console.log(this.computeMD5Data(data));
+            this.computeMD5Data(data);
+            if (this.computeMD5Data(Object.values(agreement.data).join('_')) !== this.computeMD5Data(data)) {
+                response.data = 'Data did match on blockchain';
+                return response;
+            }
+            const walletContents = await wallet.get(isOwner ? owner : renter);
+            const userPrivateKey = walletContents['credentials'].privateKey;
+            const sig = new KJUR.crypto.Signature({ alg: 'SHA256withECDSA' });
+            sig.init(userPrivateKey, '');
+            sig.updateHex(data);
+            const sigValueHex = sig.sign();
+            const sigValueBase64 = new Buffer(sigValueHex, 'hex').toString('base64');
+            console.log('Signature: ' + sigValueBase64);
+            const afterSign = await this.invoke(this.FUNCTION_NAME.SIGN_CONTRACT, keyContract, sigValueBase64, isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER);
+            console.log(afterSign);
+            return response;
+        }
+        catch (error) {
+            console.error('\n=====================');
+            console.error(`Failed to sigining contract: ${error}`);
+            console.error('=====================\n');
+        }
+        return response;
+    }
+    computeMD5Data(src) {
+        return CryptoJS.MD5(src).toString();
     }
     async queryContract(contract) {
-        const { carId, ownerId, renterId, bookingId, } = contract;
-        const keyContract = CryptoJS.MD5(`${bookingId}_${carId}_${ownerId}_${renterId}`);
-        return this.query(this.FUNCTION_NAME.QUERY_CONTRACT, keyContract.toString());
+        const { carId, renter, owner, bookingId, copyType } = contract;
+        const keyContract = CryptoJS.MD5(`${bookingId}_${carId}_${owner}_${renter}`);
+        return this.query(this.FUNCTION_NAME.QUERY_CONTRACT, keyContract.toString(), copyType);
     }
     async query(fnName, ...args) {
         const response = {
@@ -99,7 +161,6 @@ let AppService = class AppService {
             const ccp = JSON.parse(fs.readFileSync(this.CCP_PATH, 'utf8'));
             const walletPath = path.join(process.cwd(), 'wallet');
             const wallet = await fabric_network_1.Wallets.newFileSystemWallet(walletPath);
-            console.log(`Wallet path: ${walletPath}`);
             await gateway.connect(ccp, {
                 wallet,
                 identity: 'admin',
@@ -111,6 +172,7 @@ let AppService = class AppService {
             console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
             response.success = true;
             response.data = JSON.parse(result.toString());
+            await gateway.disconnect();
             return response;
         }
         catch (error) {

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
-import { RegisterRequest, ResponseBody, SubmitContractRequest, QueryContractRequest } from './app.dto';
+import { RegisterRequest, ResponseBody, SubmitContractRequest, QueryContractRequest, SiginingContractRequest } from './app.dto';
 
 @Controller()
 export class AppController {
@@ -31,10 +31,7 @@ export class AppController {
   }
 
   @Post('sign-contract')
-  async signContract(@Body() request: RegisterRequest): Promise<ResponseBody> {
-    const response: ResponseBody = {
-      success : false,
-    };
-    return response;
+  async signContract(@Body() request: SiginingContractRequest): Promise<ResponseBody> {
+    return await this.appService.signingContract(request);
   }
 }

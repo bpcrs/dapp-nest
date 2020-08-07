@@ -9,8 +9,8 @@ export class RegisterRequest {
 export class SubmitContractRequest {
     public bookingId: number;
     public carId: number;
-    public renterId: number;
-    public ownerId: number;
+    public renter: string;
+    public owner: string;
     public fromDate: Date;
     public toDate: Date;
     public carPrice: number;
@@ -23,8 +23,17 @@ export class SubmitContractRequest {
 export class QueryContractRequest {
     public bookingId: number;
     public carId: number;
-    public renterId: number;
-    public ownerId: number;
+    public renter: string;
+    public owner: string;
+    public copyType: string;
+}
+export class SiginingContractRequest {
+    public bookingId: number;
+    public carId: number;
+    public renter: string;
+    public owner: string;
+    public isOwner: boolean;
+    public data: string;
 }
 export class Criteria {
     public name: string;

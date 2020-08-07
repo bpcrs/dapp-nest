@@ -3,8 +3,14 @@ import path = require('path');
 import fs = require('fs');
 import { Gateway, Wallets } from 'fabric-network';
 import FabricCAServices = require('fabric-ca-client');
-import { SubmitContractRequest, ResponseBody, QueryContractRequest } from './app.dto';
+import {
+  SubmitContractRequest,
+  ResponseBody,
+  QueryContractRequest,
+  SiginingContractRequest,
+} from './app.dto';
 import CryptoJS = require('crypto-js');
+const { KJUR, KEYUTIL } = require('jsrsasign');
 
 @Injectable()
 export class AppService {
@@ -21,6 +27,12 @@ export class AppService {
   FUNCTION_NAME = {
     SUBMIT_CONTRACT: 'submitContract',
     QUERY_CONTRACT: 'queryContract',
+    SIGN_CONTRACT: 'singingContract',
+  };
+
+  COPY_TYPE = {
+    OWNER: 'OWNER',
+    RENTER: 'RENTER',
   };
 
   getHello(): string {
@@ -102,8 +114,8 @@ export class AppService {
   async submitContract(contract: SubmitContractRequest): Promise<ResponseBody> {
     const {
       carId,
-      ownerId,
-      renterId,
+      owner,
+      renter,
       bookingId,
       fromDate,
       toDate,
@@ -114,7 +126,7 @@ export class AppService {
       destination,
     } = contract;
     const keyContract = CryptoJS.MD5(
-      `${bookingId}_${carId}_${ownerId}_${renterId}`,
+      `${bookingId}_${carId}_${owner}_${renter}`,
     );
     console.log(contract);
     const criteriaJSON = JSON.stringify(criteria);
@@ -122,8 +134,8 @@ export class AppService {
       this.FUNCTION_NAME.SUBMIT_CONTRACT,
       keyContract.toString(),
       carId.toString(),
-      renterId.toString(),
-      ownerId.toString(),
+      renter,
+      owner,
       fromDate.toString(),
       toDate.toString(),
       location,
@@ -134,17 +146,91 @@ export class AppService {
     );
   }
 
+  async signingContract(
+    request: SiginingContractRequest,
+  ): Promise<ResponseBody> {
+    const response: ResponseBody = {
+      success: false,
+      data: '',
+    };
+    const { carId, owner, renter, bookingId, isOwner, data } = request;
+    try {
+      const keyContract = CryptoJS.MD5(
+        `${bookingId}_${carId}_${owner}_${renter}`,
+      );
+      // Create a new file system based wallet for managing identities.
+      const walletPath = path.join(process.cwd(), 'wallet');
+      const wallet = await Wallets.newFileSystemWallet(walletPath);
+
+      // Check to see if we've already enrolled the user.
+      const userIdentity = await wallet.get(isOwner ? owner : renter);
+      if (!userIdentity) {
+        console.log(
+          'An identity for the user ' + isOwner
+            ? owner
+            : renter + ' does not exist in the wallet',
+        );
+        return;
+      }
+
+      const agreement = await this.queryContract({
+        bookingId,
+        carId,
+        owner,
+        renter,
+        copyType: isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER,
+      });
+      console.log('==================================');
+      console.log(Object.values(agreement.data).join('_'))
+      console.log(data)
+      console.log(this.computeMD5Data(Object.values(agreement.data).join('_')))
+      console.log(this.computeMD5Data(data))
+      this.computeMD5Data(data);
+      if (this.computeMD5Data(Object.values(agreement.data).join('_')) !== this.computeMD5Data(data)) {
+        response.data = 'Data did match on blockchain';
+        return response;
+      }
+      // extract certificate info from wallet
+      const walletContents = await wallet.get(isOwner ? owner : renter);
+      const userPrivateKey = walletContents['credentials'].privateKey;
+      const sig = new KJUR.crypto.Signature({ alg: 'SHA256withECDSA' });
+      sig.init(userPrivateKey, '');
+      sig.updateHex(data);
+      const sigValueHex = sig.sign();
+      const sigValueBase64 = new Buffer(sigValueHex, 'hex').toString('base64');
+      console.log('Signature: ' + sigValueBase64);
+
+      const afterSign = await this.invoke(
+        this.FUNCTION_NAME.SIGN_CONTRACT, keyContract,
+        sigValueBase64,
+        isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER,
+      );
+
+      console.log(afterSign);
+      return response;
+    } catch (error) {
+      console.error('\n=====================');
+      console.error(`Failed to sigining contract: ${error}`);
+      console.error('=====================\n');
+    }
+    return response;
+  }
+
+  computeMD5Data(src): string {
+    return CryptoJS.MD5(src).toString();
+  }
+
   async queryContract(contract: QueryContractRequest): Promise<ResponseBody> {
-    const {
-      carId,
-      ownerId,
-      renterId,
-      bookingId,
-    } = contract;
+    const { carId, renter, owner, bookingId, copyType } = contract;
+
     const keyContract = CryptoJS.MD5(
-      `${bookingId}_${carId}_${ownerId}_${renterId}`,
+      `${bookingId}_${carId}_${owner}_${renter}`,
     );
-    return this.query(this.FUNCTION_NAME.QUERY_CONTRACT, keyContract.toString());
+    return this.query(
+      this.FUNCTION_NAME.QUERY_CONTRACT,
+      keyContract.toString(),
+      copyType,
+    );
   }
   async query(fnName: string, ...args: string[]): Promise<ResponseBody> {
     const response: ResponseBody = {
@@ -158,7 +244,6 @@ export class AppService {
       // Create a new file system based wallet for managing identities.
       const walletPath = path.join(process.cwd(), 'wallet');
       const wallet = await Wallets.newFileSystemWallet(walletPath);
-      console.log(`Wallet path: ${walletPath}`);
       await gateway.connect(ccp, {
         wallet,
         identity: 'admin',
@@ -180,6 +265,7 @@ export class AppService {
       );
       response.success = true;
       response.data = JSON.parse(result.toString());
+      await gateway.disconnect();
       return response;
     } catch (error) {
       console.error(`Failed to evaluate transaction: ${error}`);

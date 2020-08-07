@@ -37,10 +37,7 @@ let AppController = class AppController {
         return await this.appService.queryContract(request);
     }
     async signContract(request) {
-        const response = {
-            success: false,
-        };
-        return response;
+        return await this.appService.signingContract(request);
     }
 };
 __decorate([
@@ -74,7 +71,7 @@ __decorate([
     common_1.Post('sign-contract'),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [app_dto_1.RegisterRequest]),
+    __metadata("design:paramtypes", [app_dto_1.SiginingContractRequest]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "signContract", null);
 AppController = __decorate([
