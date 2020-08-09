@@ -3,6 +3,7 @@ import path = require('path');
 import fs = require('fs');
 import { Gateway, Wallets } from 'fabric-network';
 import FabricCAServices = require('fabric-ca-client');
+import FabricClient = require('fabric-client');
 import {
   SubmitContractRequest,
   ResponseBody,
@@ -35,6 +36,7 @@ export class AppService {
     RENTER: 'RENTER',
   };
 
+
   getHello(): string {
     return 'Hello World!';
   }
@@ -59,7 +61,7 @@ export class AppService {
         console.log(
           `An identity for the user ${name} already exists in the wallet`,
         );
-        return;
+        return true;
       }
 
       // Check to see if we've already enrolled the admin user.
@@ -180,10 +182,27 @@ export class AppService {
         renter,
         copyType: isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER,
       });
-      if (this.computeMD5Data(Object.values(agreement.data).join('_')) !== this.computeMD5Data(data)) {
-        response.data = 'Data not match on blockchain';
-        return response;
+      if (agreement) {
+        const agreementData = agreement.data;
+        if (
+          this.computeMD5Data(data) !==
+          this.computeMD5Data(
+            agreementData.carId +
+              agreementData.owner +
+              agreementData.renter +
+              agreementData.fromDate +
+              agreementData.toDate +
+              agreementData.totalPrice +
+              agreementData.carPrice +
+              agreementData.location +
+              agreementData.destination,
+          )
+        ) {
+          response.data = 'Data not match on blockchain';
+          return response;
+        }
       }
+
       // extract certificate info from wallet
       const walletContents = await wallet.get(isOwner ? owner : renter);
       const userPrivateKey = walletContents['credentials'].privateKey;
@@ -194,15 +213,18 @@ export class AppService {
       const sigValueBase64 = new Buffer(sigValueHex, 'hex').toString('base64');
       console.log('Signature: ' + sigValueBase64);
 
-      const afterSign = await this.invoke(
-        this.FUNCTION_NAME.SIGN_CONTRACT, keyContract.toString(),
+      await this.invoke(
+        this.FUNCTION_NAME.SIGN_CONTRACT,
+        keyContract.toString(),
         isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER,
         sigValueBase64,
       );
 
-      console.log(afterSign);
+      response.data = 'Signed contract';
+      response.success = true;
       return response;
     } catch (error) {
+      response.data = error;
       console.error('\n=====================');
       console.error(`Failed to sigining contract: ${error}`);
       console.error('=====================\n');
@@ -254,9 +276,7 @@ export class AppService {
       // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
       // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
       const result = await contract.evaluateTransaction(fnName, ...args);
-      console.log(
-        `Transaction has been evaluated`,
-      );
+      console.log(`Transaction has been evaluated`);
       response.success = true;
       response.data = JSON.parse(result.toString());
       await gateway.disconnect();

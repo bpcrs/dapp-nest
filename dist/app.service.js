@@ -43,7 +43,7 @@ let AppService = class AppService {
             const userIdentity = await wallet.get(name);
             if (userIdentity) {
                 console.log(`An identity for the user ${name} already exists in the wallet`);
-                return;
+                return true;
             }
             const adminIdentity = await wallet.get('admin');
             if (!adminIdentity) {
@@ -114,9 +114,21 @@ let AppService = class AppService {
                 renter,
                 copyType: isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER,
             });
-            if (this.computeMD5Data(Object.values(agreement.data).join('_')) !== this.computeMD5Data(data)) {
-                response.data = 'Data not match on blockchain';
-                return response;
+            if (agreement) {
+                const agreementData = agreement.data;
+                if (this.computeMD5Data(data) !==
+                    this.computeMD5Data(agreementData.carId +
+                        agreementData.owner +
+                        agreementData.renter +
+                        agreementData.fromDate +
+                        agreementData.toDate +
+                        agreementData.totalPrice +
+                        agreementData.carPrice +
+                        agreementData.location +
+                        agreementData.destination)) {
+                    response.data = 'Data not match on blockchain';
+                    return response;
+                }
             }
             const walletContents = await wallet.get(isOwner ? owner : renter);
             const userPrivateKey = walletContents['credentials'].privateKey;
@@ -126,11 +138,13 @@ let AppService = class AppService {
             const sigValueHex = sig.sign();
             const sigValueBase64 = new Buffer(sigValueHex, 'hex').toString('base64');
             console.log('Signature: ' + sigValueBase64);
-            const afterSign = await this.invoke(this.FUNCTION_NAME.SIGN_CONTRACT, keyContract.toString(), isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER, sigValueBase64);
-            console.log(afterSign);
+            await this.invoke(this.FUNCTION_NAME.SIGN_CONTRACT, keyContract.toString(), isOwner ? this.COPY_TYPE.OWNER : this.COPY_TYPE.RENTER, sigValueBase64);
+            response.data = 'Signed contract';
+            response.success = true;
             return response;
         }
         catch (error) {
+            response.data = error;
             console.error('\n=====================');
             console.error(`Failed to sigining contract: ${error}`);
             console.error('=====================\n');

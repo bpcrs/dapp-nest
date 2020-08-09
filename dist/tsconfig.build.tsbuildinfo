@@ -1576,18 +1576,38 @@
         "signature": "eb6999e830f051520e0bd700736095868da48c3786a38d184aa1a7e404e85326",
         "affectsGlobalScope": false
       },
+      "../node_modules/@types/bytebuffer/index.d.ts": {
+        "version": "25935994143eca2ec1c4fa81c32a72d129ea928aec041beeb7ce622c19c5e074",
+        "signature": "25935994143eca2ec1c4fa81c32a72d129ea928aec041beeb7ce622c19c5e074",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/fabric-client/node_modules/fabric-ca-client/types/index.d.ts": {
+        "version": "eb6999e830f051520e0bd700736095868da48c3786a38d184aa1a7e404e85326",
+        "signature": "eb6999e830f051520e0bd700736095868da48c3786a38d184aa1a7e404e85326",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/fabric-client/types/base.d.ts": {
+        "version": "9111695b4ce41462d72d4ddb52c20db9e981485f6ee0893bba6d2991e4ea813e",
+        "signature": "9111695b4ce41462d72d4ddb52c20db9e981485f6ee0893bba6d2991e4ea813e",
+        "affectsGlobalScope": false
+      },
+      "../node_modules/fabric-client/types/index.d.ts": {
+        "version": "f4f4e8c36673265199429f099533710e2decf3d05fdbab39139dafe2c2723304",
+        "signature": "f4f4e8c36673265199429f099533710e2decf3d05fdbab39139dafe2c2723304",
+        "affectsGlobalScope": false
+      },
       "../src/app.dto.ts": {
         "version": "2cad57666d206a2d89cbd6f07105ffbcc1ab52337eada7943505741928c1a1a9",
         "signature": "471662449c7c464899200a69c48efc0a1cc7368c437f7ca4ae7b416640ab3ce9",
         "affectsGlobalScope": false
       },
       "../src/app.service.ts": {
-        "version": "c17a49e1fb3f8c460b05050ade55274e77d501e05db31be96742391a5353a56b",
+        "version": "36412ad62a8999413bf2cf33ca37cf85fc7ee94d2861d9b299a711de5cb0a376",
         "signature": "99cc50d0c9cfbaaa627126cd0ff80ff8ecae975b74f3a1aab8682aca74124bc1",
         "affectsGlobalScope": false
       },
       "../src/app.controller.ts": {
-        "version": "17eb4bc0946dcd0d062322742c47bf4f9ef05e1a927fce105aa67b6e0e1d0587",
+        "version": "263f48414586144562109646bb098ebc0475fdbabd6fbea146e2dbd7686c04d5",
         "signature": "fb50f83fbcd1ae9d3ecea426657b73bb03957fc2633fbb5533827716624a820f",
         "affectsGlobalScope": false
       },
@@ -2147,18 +2167,8 @@
         "affectsGlobalScope": false
       },
       "../node_modules/@types/yargs/index.d.ts": {
-        "version": "6055ac126cf1a6c818330d033eb3e99df5070a598359fe30c430f844dafac7ce",
-        "signature": "6055ac126cf1a6c818330d033eb3e99df5070a598359fe30c430f844dafac7ce",
-        "affectsGlobalScope": false
-      },
-      "../../../../node_modules/@types/long/index.d.ts": {
-        "version": "e8465811693dfe4e96ef2b3dffda539d6edfe896961b7af37b44db2c0e48532b",
-        "signature": "e8465811693dfe4e96ef2b3dffda539d6edfe896961b7af37b44db2c0e48532b",
-        "affectsGlobalScope": false
-      },
-      "../../../../node_modules/@types/bytebuffer/index.d.ts": {
-        "version": "25935994143eca2ec1c4fa81c32a72d129ea928aec041beeb7ce622c19c5e074",
-        "signature": "25935994143eca2ec1c4fa81c32a72d129ea928aec041beeb7ce622c19c5e074",
+        "version": "70bac89a1173ac1f8b31b9c7399ffb4c784a8e669e98a277ea39696c009a7ce0",
+        "signature": "70bac89a1173ac1f8b31b9c7399ffb4c784a8e669e98a277ea39696c009a7ce0",
         "affectsGlobalScope": false
       }
     },
@@ -3877,6 +3887,14 @@
         "../node_modules/@types/node/ts3.7/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/@types/bytebuffer/index.d.ts": [
+        "../node_modules/@types/long/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/ts3.7/index.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/@types/caseless/index.d.ts": [
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -4498,6 +4516,30 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/fabric-common/types/index.d.ts"
+      ],
+      "../node_modules/fabric-client/node_modules/fabric-ca-client/types/index.d.ts": [
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/fabric-common/types/index.d.ts"
+      ],
+      "../node_modules/fabric-client/types/base.d.ts": [
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/fabric-client/types/index.d.ts"
+      ],
+      "../node_modules/fabric-client/types/index.d.ts": [
+        "../node_modules/@types/bytebuffer/index.d.ts",
+        "../node_modules/@types/long/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/fabric-ca-client/types/index.d.ts",
+        "../node_modules/fabric-client/types/base.d.ts"
       ],
       "../node_modules/fabric-common/types/index.d.ts": [
         "../node_modules/@types/long/index.d.ts",
@@ -5597,6 +5639,7 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/fabric-ca-client/types/index.d.ts",
+        "../node_modules/fabric-client/types/index.d.ts",
         "../node_modules/fabric-network/types/index.d.ts",
         "../src/app.dto.ts"
       ],
@@ -5608,20 +5651,6 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../src/app.module.ts"
-      ],
-      "../../../../node_modules/@types/bytebuffer/index.d.ts": [
-        "../node_modules/@types/long/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/ts3.7/index.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../../../../node_modules/@types/long/index.d.ts": [
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts"
       ]
     },
     "exportedModulesMap": {
@@ -7326,6 +7355,14 @@
         "../node_modules/@types/node/ts3.7/index.d.ts",
         "../node_modules/@types/node/util.d.ts"
       ],
+      "../node_modules/@types/bytebuffer/index.d.ts": [
+        "../node_modules/@types/long/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/ts3.7/index.d.ts",
+        "../node_modules/@types/node/util.d.ts"
+      ],
       "../node_modules/@types/caseless/index.d.ts": [
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -7947,6 +7984,30 @@
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/fabric-common/types/index.d.ts"
+      ],
+      "../node_modules/fabric-client/node_modules/fabric-ca-client/types/index.d.ts": [
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/fabric-common/types/index.d.ts"
+      ],
+      "../node_modules/fabric-client/types/base.d.ts": [
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/fabric-client/types/index.d.ts"
+      ],
+      "../node_modules/fabric-client/types/index.d.ts": [
+        "../node_modules/@types/bytebuffer/index.d.ts",
+        "../node_modules/@types/long/index.d.ts",
+        "../node_modules/@types/node/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/fabric-ca-client/types/index.d.ts",
+        "../node_modules/fabric-client/types/base.d.ts"
       ],
       "../node_modules/fabric-common/types/index.d.ts": [
         "../node_modules/@types/long/index.d.ts",
@@ -9020,20 +9081,6 @@
       ],
       "../src/app.service.ts": [
         "../src/app.dto.ts"
-      ],
-      "../../../../node_modules/@types/bytebuffer/index.d.ts": [
-        "../../../../node_modules/@types/long/index.d.ts",
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/ts3.7/index.d.ts",
-        "../node_modules/@types/node/util.d.ts"
-      ],
-      "../../../../node_modules/@types/long/index.d.ts": [
-        "../node_modules/@types/node/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/fs.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts",
-        "../node_modules/@types/node/util.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
@@ -9250,6 +9297,7 @@
       "../node_modules/@types/babel__template/index.d.ts",
       "../node_modules/@types/babel__traverse/index.d.ts",
       "../node_modules/@types/body-parser/index.d.ts",
+      "../node_modules/@types/bytebuffer/index.d.ts",
       "../node_modules/@types/caseless/index.d.ts",
       "../node_modules/@types/color-name/index.d.ts",
       "../node_modules/@types/connect/index.d.ts",
@@ -9331,6 +9379,9 @@
       "../node_modules/@types/yargs/index.d.ts",
       "../node_modules/axios/index.d.ts",
       "../node_modules/fabric-ca-client/types/index.d.ts",
+      "../node_modules/fabric-client/node_modules/fabric-ca-client/types/index.d.ts",
+      "../node_modules/fabric-client/types/base.d.ts",
+      "../node_modules/fabric-client/types/index.d.ts",
       "../node_modules/fabric-common/types/index.d.ts",
       "../node_modules/fabric-network/lib/checkpointer.d.ts",
       "../node_modules/fabric-network/lib/contract.d.ts",
@@ -9466,9 +9517,7 @@
       "../src/app.dto.ts",
       "../src/app.module.ts",
       "../src/app.service.ts",
-      "../src/main.ts",
-      "../../../../node_modules/@types/bytebuffer/index.d.ts",
-      "../../../../node_modules/@types/long/index.d.ts"
+      "../src/main.ts"
     ]
   },
   "version": "3.9.7"

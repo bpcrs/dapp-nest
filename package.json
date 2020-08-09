@@ -26,6 +26,7 @@
     "@nestjs/swagger": "^4.5.12",
     "crypto-js": "^4.0.0",
     "fabric-ca-client": "^2.2.0",
+    "fabric-client": "^1.4.10",
     "fabric-network": "^2.2.0",
     "fastify-swagger": "^3.2.0",
     "jsrsasign": "^8.0.23",
