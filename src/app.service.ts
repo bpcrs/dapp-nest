@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import path = require('path');
 import fs = require('fs');
-import { Gateway, Wallets } from 'fabric-network';
+import { Gateway, Wallets, Contract } from 'fabric-network';
 import FabricCAServices = require('fabric-ca-client');
 import FabricClient = require('fabric-client');
 import {
@@ -36,6 +36,7 @@ export class AppService {
     RENTER: 'RENTER',
   };
 
+  AS_LOCALHOST: false;
 
   getHello(): string {
     return 'Hello World!';
@@ -263,7 +264,7 @@ export class AppService {
       await gateway.connect(ccp, {
         wallet,
         identity: 'admin',
-        discovery: { enabled: true, asLocalhost: false },
+        discovery: { enabled: true, asLocalhost: this.AS_LOCALHOST },
       });
 
       // Get the network (channel) our contract is deployed to.
@@ -304,7 +305,7 @@ export class AppService {
       await gateway.connect(ccp, {
         wallet,
         identity: 'admin',
-        discovery: { enabled: true, asLocalhost: false },
+        discovery: { enabled: true, asLocalhost: this.AS_LOCALHOST },
       });
 
       // Get the network (channel) our contract is deployed to.
