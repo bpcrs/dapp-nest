@@ -36,7 +36,7 @@ export class AppService {
     RENTER: 'RENTER',
   };
 
-  AS_LOCALHOST: false;
+  AS_LOCALHOST = false;
 
   getHello(): string {
     return 'Hello World!';

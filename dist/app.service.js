@@ -28,6 +28,7 @@ let AppService = class AppService {
             OWNER: 'OWNER',
             RENTER: 'RENTER',
         };
+        this.AS_LOCALHOST = false;
     }
     getHello() {
         return 'Hello World!';
@@ -172,7 +173,7 @@ let AppService = class AppService {
             await gateway.connect(ccp, {
                 wallet,
                 identity: 'admin',
-                discovery: { enabled: true, asLocalhost: true },
+                discovery: { enabled: true, asLocalhost: this.AS_LOCALHOST },
             });
             const network = await gateway.getNetwork(this.CHANNEL_ID);
             const contract = network.getContract(this.CONTRACT_ID);
@@ -203,7 +204,7 @@ let AppService = class AppService {
             await gateway.connect(ccp, {
                 wallet,
                 identity: 'admin',
-                discovery: { enabled: true, asLocalhost: true },
+                discovery: { enabled: true, asLocalhost: this.AS_LOCALHOST },
             });
             const network = await gateway.getNetwork(this.CHANNEL_ID);
             const contract = network.getContract(this.CONTRACT_ID);

@@ -12,6 +12,7 @@ export declare class AppService {
         OWNER: string;
         RENTER: string;
     };
+    AS_LOCALHOST: boolean;
     getHello(): string;
     registerUser(name: string): Promise<boolean>;
     submitContract(contract: SubmitContractRequest): Promise<ResponseBody>;
