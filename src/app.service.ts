@@ -39,9 +39,7 @@ export class AppService {
 
   AS_LOCALHOST = false;
 
-
   getHello(): string {
-    console.log("AS_LOCALHOST",this.AS_LOCALHOST)
     return 'Hello World!';
   }
 

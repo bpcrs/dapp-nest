@@ -13,8 +13,7 @@ const fs = require("fs");
 const fabric_network_1 = require("fabric-network");
 const FabricCAServices = require("fabric-ca-client");
 const CryptoJS = require("crypto-js");
-const process_1 = require("process");
-const { KJUR, KEYUTIL } = require('jsrsasign');
+const { KJUR } = require('jsrsasign');
 let AppService = class AppService {
     constructor() {
         this.CCP_PATH = path.resolve('.', 'crypto-config', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
@@ -29,10 +28,9 @@ let AppService = class AppService {
             OWNER: 'OWNER',
             RENTER: 'RENTER',
         };
-        this.AS_LOCALHOST = process_1.env.NODE_ENV !== 'production';
+        this.AS_LOCALHOST = false;
     }
     getHello() {
-        console.log("AS_LOCALHOST", this.AS_LOCALHOST);
         return 'Hello World!';
     }
     async registerUser(name) {
