@@ -12,7 +12,7 @@ import {
 } from './app.dto';
 import CryptoJS = require('crypto-js');
 import { env } from 'process';
-const { KJUR, KEYUTIL } = require('jsrsasign');
+const { KJUR } = require('jsrsasign');
 
 @Injectable()
 export class AppService {
@@ -37,7 +37,7 @@ export class AppService {
     RENTER: 'RENTER',
   };
 
-  AS_LOCALHOST =  env.NODE_ENV !== 'production';
+  AS_LOCALHOST = false;
 
 
   getHello(): string {
