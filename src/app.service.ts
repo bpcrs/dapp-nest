@@ -3,7 +3,6 @@ import path = require('path');
 import fs = require('fs');
 import { Gateway, Wallets, Contract } from 'fabric-network';
 import FabricCAServices = require('fabric-ca-client');
-import FabricClient = require('fabric-client');
 import {
   SubmitContractRequest,
   ResponseBody,
@@ -316,7 +315,7 @@ export class AppService {
       // Create a new file system based wallet for managing identities.
       const walletPath = path.join(process.cwd(), 'wallet');
       const wallet = await Wallets.newFileSystemWallet(walletPath);
-      await gateway.connect(ccp, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: this.AS_LOCALHOST } });
+      await gateway.connect(ccp, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: false } });
 
 
       // Get the network (channel) our contract is deployed to.
@@ -353,9 +352,7 @@ export class AppService {
       // Create a new file system based wallet for managing identities.
       const walletPath = path.join(process.cwd(), 'wallet');
       const wallet = await Wallets.newFileSystemWallet(walletPath);
-      console.log(`Wallet path: ${walletPath}`);
-      await gateway.connect(ccp, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: this.AS_LOCALHOST } });
-
+      await gateway.connect(ccp, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: false} });
       // Get the network (channel) our contract is deployed to.
       const network = await gateway.getNetwork(this.CHANNEL_ID);
 
@@ -368,7 +365,7 @@ export class AppService {
       await contract.submitTransaction(fnName, ...args);
       console.log('Transaction has been submitted');
       // Disconnect from the gateway.
-      await gateway.disconnect();
+      gateway.disconnect();
       response.success = true;
       return response;
     } catch (error) {
