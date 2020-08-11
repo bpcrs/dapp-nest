@@ -49,8 +49,9 @@ export class AppService {
       const ccp = JSON.parse(fs.readFileSync(this.CCP_PATH, 'utf8'));
 
       // Create a new CA client for interacting with the CA.
-      const caURL = ccp.certificateAuthorities['ca.org1.example.com'].url;
-      const ca = new FabricCAServices(caURL);
+      const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
+      const ca = new FabricCAServices(this.AS_LOCALHOST ? caInfo.url : `http://${caInfo.caName}:7054'`,
+      );
 
       // Create a new file system based wallet for managing identities.
       const walletPath = path.join(process.cwd(), 'wallet');
@@ -160,9 +161,8 @@ export class AppService {
       // Create a new CA client for interacting with the CA.
       const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
       const caTLSCACerts = caInfo.tlsCACerts.pem;
-      console.log(this.AS_LOCALHOST ? caInfo.url : caInfo.caName + ':7054',)
       const ca = new FabricCAServices(
-        this.AS_LOCALHOST ? caInfo.url : caInfo.caName + ':7054',
+        this.AS_LOCALHOST ? caInfo.url : `http://${caInfo.caName}:7054'`,
         { trustedRoots: caTLSCACerts, verify: false },
         caInfo.caName,
       );
