@@ -46,4 +46,9 @@ export class AppController {
   ): Promise<ResponseBody> {
     return await this.appService.signingContract(request);
   }
+
+  @Post('enroll-admin')
+  async enrollAdmin(): Promise<ResponseBody> {
+    return await this.appService.enrollAdmin();
+  }
 }

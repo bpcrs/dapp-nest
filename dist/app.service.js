@@ -13,6 +13,7 @@ const fs = require("fs");
 const fabric_network_1 = require("fabric-network");
 const FabricCAServices = require("fabric-ca-client");
 const CryptoJS = require("crypto-js");
+const process_1 = require("process");
 const { KJUR, KEYUTIL } = require('jsrsasign');
 let AppService = class AppService {
     constructor() {
@@ -28,7 +29,7 @@ let AppService = class AppService {
             OWNER: 'OWNER',
             RENTER: 'RENTER',
         };
-        this.AS_LOCALHOST = false;
+        this.AS_LOCALHOST = process_1.env.NODE_ENV !== 'production';
     }
     getHello() {
         return 'Hello World!';
@@ -90,6 +91,51 @@ let AppService = class AppService {
         console.log(contract);
         const criteriaJSON = JSON.stringify(criteria);
         return this.invoke(this.FUNCTION_NAME.SUBMIT_CONTRACT, keyContract.toString(), carId.toString(), renter, owner, fromDate.toString(), toDate.toString(), location, destination, carPrice.toString(), totalPrice.toString(), criteriaJSON);
+    }
+    async enrollAdmin() {
+        const response = {
+            success: false,
+            data: '',
+        };
+        try {
+            const ccp = JSON.parse(fs.readFileSync(this.CCP_PATH, 'utf8'));
+            const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
+            const caTLSCACerts = caInfo.tlsCACerts.pem;
+            console.log(this.AS_LOCALHOST ? caInfo.url : caInfo.caName + ':7054');
+            const ca = new FabricCAServices(this.AS_LOCALHOST ? caInfo.url : caInfo.caName + ':7054', { trustedRoots: caTLSCACerts, verify: false }, caInfo.caName);
+            const walletPath = path.join(process.cwd(), 'wallet');
+            const wallet = await fabric_network_1.Wallets.newFileSystemWallet(walletPath);
+            console.log(`Wallet path: ${walletPath}`);
+            const identity = await wallet.get('admin');
+            if (identity) {
+                response.data =
+                    'An identity for the admin user "admin" already exists in the wallet';
+                console.log(response.data);
+                return response;
+            }
+            const enrollment = await ca.enroll({
+                enrollmentID: 'admin',
+                enrollmentSecret: 'adminpw',
+            });
+            const x509Identity = {
+                credentials: {
+                    certificate: enrollment.certificate,
+                    privateKey: enrollment.key.toBytes(),
+                },
+                mspId: 'Org1MSP',
+                type: 'X.509',
+            };
+            await wallet.put('admin', x509Identity);
+            response.data =
+                'Successfully enrolled admin user "admin" and imported it into the wallet';
+            console.log(response.data);
+            response.success = true;
+            return response;
+        }
+        catch (error) {
+            console.error(`Failed to enroll admin user "admin": ${error}`);
+            return response;
+        }
     }
     async signingContract(request) {
         const response = {

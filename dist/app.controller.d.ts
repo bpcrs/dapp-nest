@@ -8,4 +8,5 @@ export declare class AppController {
     submitContract(request: SubmitContractRequest): Promise<ResponseBody>;
     queryContract(request: QueryContractRequest): Promise<ResponseBody>;
     signContract(request: SiginingContractRequest): Promise<ResponseBody>;
+    enrollAdmin(): Promise<ResponseBody>;
 }

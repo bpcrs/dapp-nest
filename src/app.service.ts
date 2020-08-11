@@ -11,6 +11,7 @@ import {
   SiginingContractRequest,
 } from './app.dto';
 import CryptoJS = require('crypto-js');
+import { env } from 'process';
 const { KJUR, KEYUTIL } = require('jsrsasign');
 
 @Injectable()
@@ -36,7 +37,7 @@ export class AppService {
     RENTER: 'RENTER',
   };
 
-  AS_LOCALHOST = false;
+  AS_LOCALHOST = env.NODE_ENV !== 'production';
 
   getHello(): string {
     return 'Hello World!';
@@ -147,6 +148,62 @@ export class AppService {
       totalPrice.toString(),
       criteriaJSON,
     );
+  }
+
+  async enrollAdmin(): Promise<ResponseBody> {
+    const response: ResponseBody = {
+      success: false,
+      data: '',
+    };
+    try {
+      const ccp = JSON.parse(fs.readFileSync(this.CCP_PATH, 'utf8'));
+      // Create a new CA client for interacting with the CA.
+      const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
+      const caTLSCACerts = caInfo.tlsCACerts.pem;
+      console.log(this.AS_LOCALHOST ? caInfo.url : caInfo.caName + ':7054',)
+      const ca = new FabricCAServices(
+        this.AS_LOCALHOST ? caInfo.url : caInfo.caName + ':7054',
+        { trustedRoots: caTLSCACerts, verify: false },
+        caInfo.caName,
+      );
+
+      // Create a new file system based wallet for managing identities.
+      const walletPath = path.join(process.cwd(), 'wallet');
+      const wallet = await Wallets.newFileSystemWallet(walletPath);
+      console.log(`Wallet path: ${walletPath}`);
+
+      // Check to see if we've already enrolled the admin user.
+      const identity = await wallet.get('admin');
+      if (identity) {
+        response.data =
+          'An identity for the admin user "admin" already exists in the wallet';
+        console.log(response.data);
+        return response;
+      }
+
+      // Enroll the admin user, and import the new identity into the wallet.
+      const enrollment = await ca.enroll({
+        enrollmentID: 'admin',
+        enrollmentSecret: 'adminpw',
+      });
+      const x509Identity = {
+        credentials: {
+          certificate: enrollment.certificate,
+          privateKey: enrollment.key.toBytes(),
+        },
+        mspId: 'Org1MSP',
+        type: 'X.509',
+      };
+      await wallet.put('admin', x509Identity);
+      response.data =
+        'Successfully enrolled admin user "admin" and imported it into the wallet';
+      console.log(response.data);
+      response.success = true;
+      return response;
+    } catch (error) {
+      console.error(`Failed to enroll admin user "admin": ${error}`);
+      return response;
+    }
   }
 
   async signingContract(

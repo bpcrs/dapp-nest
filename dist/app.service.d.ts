@@ -16,6 +16,7 @@ export declare class AppService {
     getHello(): string;
     registerUser(name: string): Promise<boolean>;
     submitContract(contract: SubmitContractRequest): Promise<ResponseBody>;
+    enrollAdmin(): Promise<ResponseBody>;
     signingContract(request: SiginingContractRequest): Promise<ResponseBody>;
     computeMD5Data(src: any): string;
     queryContract(contract: QueryContractRequest): Promise<ResponseBody>;

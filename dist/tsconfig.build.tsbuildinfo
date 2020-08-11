@@ -1602,13 +1602,13 @@
         "affectsGlobalScope": false
       },
       "../src/app.service.ts": {
-        "version": "afdb595b2cc2267c79922b007f3b0cbc6952dd19be6169bf66562beee23ec649",
-        "signature": "fc623f159b67917de3ce740c0363073323ba92050de221a19ab8835aa767b1f3",
+        "version": "283e8aa0af340a51ed88a8fc68d311488a9f9d9cf4406bf8e54ef9f57d56e729",
+        "signature": "2f40711f414f57756f2d7f39a30376b18f6ba542ca698e95ad4fa4ac56c826dd",
         "affectsGlobalScope": false
       },
       "../src/app.controller.ts": {
-        "version": "263f48414586144562109646bb098ebc0475fdbabd6fbea146e2dbd7686c04d5",
-        "signature": "fb50f83fbcd1ae9d3ecea426657b73bb03957fc2633fbb5533827716624a820f",
+        "version": "89cae66c481a6ce8bb13a48e2bc8d6cc51fc0e2f309b45ab5eb417d22b25aed0",
+        "signature": "0e6eaac76358b5b0a1e563a154df5112eb557b1f25ecb189d6d18c850db1e8c5",
         "affectsGlobalScope": false
       },
       "../src/app.module.ts": {
@@ -5635,6 +5635,7 @@
         "../node_modules/@nestjs/common/index.d.ts",
         "../node_modules/@types/node/fs.d.ts",
         "../node_modules/@types/node/path.d.ts",
+        "../node_modules/@types/node/process.d.ts",
         "../node_modules/@types/node/ts3.2/fs.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts",
         "../node_modules/@types/node/util.d.ts",
