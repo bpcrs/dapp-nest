@@ -32,6 +32,7 @@ let AppService = class AppService {
         this.AS_LOCALHOST = process_1.env.NODE_ENV !== 'production';
     }
     getHello() {
+        console.log("AS_LOCALHOST", this.AS_LOCALHOST);
         return 'Hello World!';
     }
     async registerUser(name) {

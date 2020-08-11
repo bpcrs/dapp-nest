@@ -37,9 +37,11 @@ export class AppService {
     RENTER: 'RENTER',
   };
 
-  AS_LOCALHOST = env.NODE_ENV !== 'production';
+  AS_LOCALHOST =  env.NODE_ENV !== 'production';
+
 
   getHello(): string {
+    console.log("AS_LOCALHOST",this.AS_LOCALHOST)
     return 'Hello World!';
   }
 
@@ -296,7 +298,6 @@ export class AppService {
 
   async queryContract(contract: QueryContractRequest): Promise<ResponseBody> {
     const { carId, renter, owner, bookingId, copyType } = contract;
-
     const keyContract = CryptoJS.MD5(
       `${bookingId}_${carId}_${owner}_${renter}`,
     );
