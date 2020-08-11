@@ -322,7 +322,7 @@ export class AppService {
       await gateway.connect(ccp, {
         wallet,
         identity: 'admin',
-        discovery: { enabled: true, asLocalhost: this.AS_LOCALHOST },
+        discovery: { enabled: true, asLocalhost: false },
       });
 
       // Get the network (channel) our contract is deployed to.
@@ -363,7 +363,7 @@ export class AppService {
       await gateway.connect(ccp, {
         wallet,
         identity: 'admin',
-        discovery: { enabled: true, asLocalhost: this.AS_LOCALHOST },
+        discovery: { enabled: true, asLocalhost: false },
       });
 
       // Get the network (channel) our contract is deployed to.
