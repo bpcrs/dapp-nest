@@ -8,6 +8,5 @@ WORKDIR /app
 COPY package*.json ./
 COPY . .
 RUN npm install
-RUN npm run build
 EXPOSE 6000
 CMD ["node", "dist/main.js"]

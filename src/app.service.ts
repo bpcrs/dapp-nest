@@ -36,8 +36,6 @@ export class AppService {
     RENTER: 'RENTER',
   };
 
-  AS_LOCALHOST = false;
-
   getHello(): string {
     return 'Hello World!';
   }
@@ -49,7 +47,7 @@ export class AppService {
 
       // Create a new CA client for interacting with the CA.
       const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
-      const ca = new FabricCAServices(this.AS_LOCALHOST ? caInfo.url : `https://${caInfo.caName}:7054`);
+      const ca = new FabricCAServices(caInfo.url);
 
       // Create a new file system based wallet for managing identities.
       const walletPath = path.join(process.cwd(), 'wallet');
@@ -160,7 +158,7 @@ export class AppService {
       const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
       const caTLSCACerts = caInfo.tlsCACerts.pem;
       const ca = new FabricCAServices(
-        this.AS_LOCALHOST ? caInfo.url : `https://${caInfo.caName}:7054`,
+        caInfo.url,
         { trustedRoots: caTLSCACerts, verify: false },
         caInfo.caName,
       );

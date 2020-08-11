@@ -5,4 +5,11 @@ services:
     volumes:
     - ./bpcrs-network/crypto-config:/app/crypto-config
     - ./wallet:/app/wallet
-    network_mode: host
+    ports:
+    - 6000:6000
+    networks:
+      - mynetwork.com
+networks:
+  mynetwork.com:
+    external:
+      name: bpcrs_byfn
