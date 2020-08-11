@@ -37,7 +37,7 @@ let AppService = class AppService {
         try {
             const ccp = JSON.parse(fs.readFileSync(this.CCP_PATH, 'utf8'));
             const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
-            const ca = new FabricCAServices(this.AS_LOCALHOST ? caInfo.url : `https://${caInfo.caName}:7054`);
+            const ca = new FabricCAServices(this.AS_LOCALHOST ? `https://${caInfo.caName}:7054` : caInfo.url);
             const walletPath = path.join(process.cwd(), 'wallet');
             const wallet = await fabric_network_1.Wallets.newFileSystemWallet(walletPath);
             console.log(`Wallet path: ${walletPath}`);
@@ -100,7 +100,7 @@ let AppService = class AppService {
             const ccp = JSON.parse(fs.readFileSync(this.CCP_PATH, 'utf8'));
             const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
             const caTLSCACerts = caInfo.tlsCACerts.pem;
-            const ca = new FabricCAServices(this.AS_LOCALHOST ? caInfo.url : `https://${caInfo.caName}:7054`, { trustedRoots: caTLSCACerts, verify: false }, caInfo.caName);
+            const ca = new FabricCAServices(this.AS_LOCALHOST ? `https://${caInfo.caName}:7054` : caInfo.url, { trustedRoots: caTLSCACerts, verify: false }, caInfo.caName);
             const walletPath = path.join(process.cwd(), 'wallet');
             const wallet = await fabric_network_1.Wallets.newFileSystemWallet(walletPath);
             console.log(`Wallet path: ${walletPath}`);
